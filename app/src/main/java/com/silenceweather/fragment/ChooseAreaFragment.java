@@ -1,6 +1,7 @@
 package com.silenceweather.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,9 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.silenceweather.R;
+import com.silenceweather.WeatherActivity;
 import com.silenceweather.db.City;
 import com.silenceweather.db.County;
 import com.silenceweather.db.Province;
+import com.silenceweather.gson.Weather;
 import com.silenceweather.util.HttpUtil;
 import com.silenceweather.util.Utility;
 
@@ -91,6 +94,13 @@ public class ChooseAreaFragment extends Fragment {
                 if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }
+                if (currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -173,7 +183,7 @@ public class ChooseAreaFragment extends Fragment {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
-            Log.d("Fragment",address);
+            Log.d("Fragment", address);
             queryFromServer(address, "county");
         }
     }
@@ -202,7 +212,7 @@ public class ChooseAreaFragment extends Fragment {
                 if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
-                    Log.d("Fragment",responseText);
+                    Log.d("Fragment", responseText);
                     result = Utility.handleCityResponse(responseText, selectedProvince.getId());
                 } else if ("county".equals(type)) {
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
