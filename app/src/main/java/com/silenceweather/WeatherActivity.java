@@ -1,5 +1,6 @@
 package com.silenceweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.silenceweather.gson.Forecast;
 import com.silenceweather.gson.Weather;
+import com.silenceweather.service.AutoUpdateService;
 import com.silenceweather.util.HttpUtil;
 import com.silenceweather.util.Utility;
 
@@ -246,5 +248,7 @@ public class WeatherActivity extends AppCompatActivity {
         sportText.setText(sport);
 
         weatherLayout.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 }
